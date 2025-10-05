@@ -1,0 +1,89 @@
+name: "Flutter Fastlane Action"
+description: "Automatically sets up Flutter and Fastlane, then builds and deploys Android/iOS apps"
+author: "Dev TtangKong"
+runs:
+  using: "node16"
+  main: "dist/index.esm.js"
+
+inputs:
+  app-id:
+    description: "Common app identifier for both platforms (optional if platform-specific IDs are provided)"
+    required: false
+
+  android-app-id:
+    description: "Application ID for Android"
+    required: false
+
+  ios-app-id:
+    description: "Application bundle identifier for iOS"
+    required: false
+
+  version-name:
+    description: "Version name for the build"
+    required: true
+
+  build-number:
+    description: "Build number for the build"
+    required: true
+
+  release-note:
+    description: "Release note for the build"
+    required: false
+
+  release-note-language:
+    description: "Language code for the release note (e.g., 'en-US', 'ko-KR')"
+    required: false
+
+  match-repository:
+    description: "Repository for Fastlane match certificates"
+    required: true
+
+  match-password:
+    description: "Password for Fastlane match"
+    required: true
+
+  match-keychain-password:
+    description: "Optional keychain password for Fastlane match"
+    required: false
+
+  appstore-connect-issuer-id:
+    description: "Issuer ID for App Store Connect API key"
+    required: true
+
+  appstore-connect-key-id:
+    description: "Key ID for App Store Connect API key"
+    required: true
+
+  appstore-connect-key:
+    description: "API key content for App Store Connect"
+    required: true
+
+  appstore-team-id:
+    description: "Team ID for the Apple Developer account"
+    required: true
+
+  service-account-path:
+    description: "File path to store the Google service account JSON"
+    required: false
+
+  service-account-json:
+    description: "Google service account JSON content for Play Store (Base64-encoded)"
+    required: false
+
+  skip-wait-processing:
+    description: >
+      Skip waiting for build processing after upload (true/false).
+      And corresponds to Fastlane skip_waiting_for_build_processing option.
+    required: false
+
+  flutter-dir:
+    description: "Directory of the Flutter project"
+    required: false
+
+  android-dir:
+    description: "Directory of the Android project"
+    required: false
+
+  ios-dir:
+    description: "Directory of the iOS project"
+    required: false

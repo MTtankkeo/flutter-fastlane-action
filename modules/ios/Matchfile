@@ -1,0 +1,6 @@
+git_url("git@github.com:{match-repository}.git")
+
+storage_mode("git")
+
+# The bundle identifier of your app.
+app_identifier("{app-bundle-id}")

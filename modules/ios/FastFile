@@ -1,0 +1,89 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+
+default_platform(:ios)
+
+platform :ios do
+  desc "Build and upload to App Store"
+  lane :deploy do |options|
+    version_name = options[:version_name]
+    build_number = options[:build_number]
+    release_note = options[:release_note]
+    release_note_language = options[:release_note_language]
+    skip_wait_processing = options[:skip_wait_processing] == "true"
+    bundle_identifier = options[:bundle_identifier]
+    ios_dir = File.expand_path("../", __dir__)
+
+    # Determine whether to submit for automatic review
+    auto_review_submit = !release_note.nil? && release_note.strip != ""
+
+    if auto_review_submit
+      puts "📤 Automatic submission enabled based on provided release notes."
+      release_note = release_note.gsub("\\n", "\n")
+    end
+
+    begin
+      # Create a temporary keychain for signing
+      setup_ci
+
+      # App Store Connect API key
+      api_key = app_store_connect_api_key(
+        key_id: ENV["APPSTORE_CONNECT_KEY_ID"],
+        key_content: ENV["APPSTORE_CONNECT_KEY"],
+        issuer_id: ENV["APPSTORE_CONNECT_ISSUER_ID"],
+        in_house: false
+      )
+
+      # Fetch distribution certificates and provisioning profiles
+      match(
+        type: "appstore",
+        api_key: api_key,
+      )
+
+      # Provisioning profile UUID
+      profile_uuid = ENV["sigh_#{bundle_identifier}_appstore"]
+
+      # Disable automatic code signing in Xcode project
+      update_code_signing_settings(
+        use_automatic_signing: false,                         # Whether to use automatic signing
+        path: "#{ios_dir}/Runner.xcodeproj",                  # Xcode project path
+        team_id: options[:appstore_team_id],                  # Team ID
+        profile_uuid: profile_uuid,                           # Provisioning profile UUID
+        code_sign_identity: "Apple Distribution"              # Certificate type
+      )
+
+      # Prepare ExportOptions.plist by replacing placeholders with actual values
+      template_option_path = File.expand_path("ExportOptions.plist", __dir__)
+      modified_option_path = File.expand_path("ModifiedExportOptions.plist", __dir__)
+
+      plist_content = File.read(template_option_path)
+      plist_content.gsub!("{app_bundle_id}", bundle_identifier)
+      plist_content.gsub!("{provisioning_profile_uuid}", profile_uuid)
+      File.write(modified_option_path, plist_content)
+
+      # Build the iOS app
+      sh("flutter build ipa --release --build-name=#{version_name} --build-number=#{build_number} --export-options-plist #{modified_option_path}")
+
+      # The absolute path where the built iOS App File (IPA) will be saved.
+      # The path is resolved relative to this `fastfile/` directory.
+      output_path = Dir.glob(File.expand_path("../../build/ios/ipa/*.ipa", __dir__)).first
+
+      # Upload the build
+      if auto_review_submit == false
+        upload_to_testflight(
+          ipa: output_path,
+          api_key: api_key,
+          distribute_external: false,
+          skip_waiting_for_build_processing: skip_wait_processing,
+        )
+      else
+        upload_to_app_store(
+          ipa: output_path,
+          api_key: api_key,
+          release_notes: {release_note_language => release_note},
+          skip_waiting_for_build_processing: skip_wait_processing,
+        )
+      end
+    end
+  end
+end

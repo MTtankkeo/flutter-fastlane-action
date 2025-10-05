@@ -1,0 +1,31 @@
+{
+  "main": "./dist/index.umd.js",
+  "module": "./dist/index.esm.js",
+  "types": "./dist/types/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "rollup -c",
+    "watch": "rollup -c -w"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.6",
+    "@rollup/plugin-node-resolve": "^16.0.2",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^24.6.2",
+    "rollup": "^4.21.0",
+    "rollup-plugin-string-import": "^1.2.6",
+    "rollup-plugin-typescript2": "^0.36.0",
+    "terser": "^5.31.6",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "@actions/core": "^1.11.1",
+    "@actions/exec": "^1.1.1",
+    "install": "^0.13.0",
+    "js-yaml": "^4.1.0",
+    "locale-code": "^2.0.2",
+    "nanoid": "^5.1.6",
+    "npm": "^11.6.1"
+  }
+}

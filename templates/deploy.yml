@@ -1,0 +1,85 @@
+name: Deploy
+
+# List of secrets that must be defined in GitHub Secrets.
+#
+# - APP_STORE_CONNECT_ISSUER_ID
+# - APP_STORE_CONNECT_KEY_ID
+# - APP_STORE_CONNECT_KEY
+# - APP_STORE_TEAM_ID
+# - MATCH_PASSWORD
+# - SSH_PRIVATE_KEY
+
+on:
+  workflow_dispatch:
+    inputs:
+      VERSION_NAME:
+        description: "Version Name (e.g. 1.2.3)"
+        required: true
+        type: string
+
+      BUILD_NUMBER:
+        description: "Build Number (e.g. 43)"
+        required: true
+        type: number
+
+      RELEASE_NOTE:
+        description: "Release Note (for automatic review submission)"
+        required: false
+        default: ""
+        type: string
+
+jobs:
+  deploy:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          # SSH private key used to access your Fastlane match repository.
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: "temurin"
+          java-version: 17
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: main # latest version
+
+      - name: Deploy Android and iOS
+        uses: MTtankkeo/flutter-fastlane-action@main
+        with:
+          # Version name for this build (e.g., 1.0.0)
+          version-name: ${{ github.event.inputs.VERSION_NAME }}
+
+          # Build number for this build (e.g., 42)
+          build-number: ${{ github.event.inputs.BUILD_NUMBER }}
+
+          # Release note for the build, used for automatic review submission
+          release-note: ${{ github.event.inputs.RELEASE_NOTE }}
+
+          # Fastlane match git repository (e.g., "my-org/my-cert-repo")
+          match-repository: {...}
+
+          # Password for match repository
+          match-password: ${{ secrets.MATCH_PASSWORD }}
+
+          # App Store Connect issuer ID
+          appstore-connect-issuer-id: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+
+          # App Store Connect API key ID
+          appstore-connect-key-id: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+
+          # App Store Connect API key content
+          appstore-connect-key: ${{ secrets.APP_STORE_CONNECT_KEY }}
+
+          # Apple Developer Team ID
+          appstore-team-id: ${{ secrets.APP_STORE_TEAM_ID }}

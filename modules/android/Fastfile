@@ -1,0 +1,44 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+
+default_platform(:android)
+
+platform :android do
+  desc "Build and upload to Play Store"
+  lane :deploy do |options|
+    version_name = options[:version_name]
+    build_number = options[:build_number]
+    release_note = options[:release_note]
+    release_note_language = options[:release_note_language]
+
+    # Determine whether to submit for automatic review
+    auto_review_submit = !release_note.nil? && release_note.strip != ""
+
+    if auto_review_submit
+      puts "📤 Automatic submission enabled based on provided release notes."
+      release_note = release_note.gsub("\\n", "\n")
+    end
+
+    # The absolute path where the built Android App Bundle (AAB) will be saved.
+    # The path is resolved relative to this `fastfile/` directory.
+    output_path = File.expand_path("../../build/app/outputs/bundle/release/release.aab", __dir__)
+
+    # Build the Android app
+    sh("flutter build appbundle --release --build-name=#{version_name} --build-number=#{build_number}")
+
+    # Upload to Play Store
+    upload_args = {
+      aab: output_path,
+      track: auto_review_submit ? "production" : "internal",
+    }
+
+    # Define release notes for automatic review submission
+    if auto_review_submit
+      upload_args[:whats_new] = {
+        release_note_language => release_note
+      }
+    end
+
+    upload_to_play_store(upload_args)
+  end
+end
