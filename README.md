@@ -1,8 +1,6 @@
 # Introduction
 This Flutter package provides a one-step CI/CD solution for Flutter apps. For a project without any Fastlane setup, it automatically configures all necessary **Fastlane settings**, builds your **Android** and **iOS** apps, and deploys them to **Google Play** and the **App Store** with zero manual setup. Developers only need to provide **six essential configuration values** in GitHub Secrets.
 
-> See Also, If you want the change-log by version for this package. refer to [CHANGELOG.md](CHANGELOG.md) for details.
-
 ### Tested And Supported Runners
 
 | 🍎 OS Type        | ⚡ Status | ⏳ Average     |
@@ -23,7 +21,7 @@ Before using this action, the GitHub Actions runner must have the following setu
 
 ```yml
 - name: Deploy Android and iOS
-  uses: MTtankkeo/flutter-fastlane-action@main
+  uses: MTtankkeo/flutter-fastlane-action@v1.0
   with:
     version-name: ${{ github.event.inputs.VERSION_NAME }}
     build-number: ${{ github.event.inputs.BUILD_NUMBER }}

@@ -1,9 +1,13 @@
-name: "Flutter Fastlane Action"
+name: "Deploy Flutter App with Fastlane"
 description: "Automatically sets up Flutter and Fastlane, then builds and deploys Android/iOS apps"
 author: "Dev TtangKong"
 runs:
   using: "node16"
   main: "dist/index.esm.js"
+
+branding:
+  icon: upload
+  color: blue
 
 inputs:
   app-id:
