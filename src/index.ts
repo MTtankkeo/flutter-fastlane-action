@@ -53,6 +53,7 @@ function isValidLanguageRegion(langCode: string) {
     const flutterDir = getInput("flutter-dir") || "./";
     const androidDir = getInput("android-dir") || "./android";
     const iosDir = getInput("ios-dir") || "./ios";
+    const buildExtra = getInput("build-extra") || null;
 
     // Main github action workspace absolute path.
     const workspaceDir = process.env.GITHUB_WORKSPACE || process.cwd();
@@ -219,12 +220,13 @@ function isValidLanguageRegion(langCode: string) {
     console.log("📄 Adding ExportOptions.plist in the ios directory.");
     writeFileSync(join(pubspecDir, iosDir, "fastlane", "ExportOptions.plist"), exportOptionsContent);
 
-    const requiredOptions = {
-        "version_name": versionName,
-        "build_number": buildNumber,
-        "release_note": releaseNote,
-        "release_note_language": releaseNoteLanguage,
-    }
+    const requiredOptions: Record<string, string | number> = {
+        version_name: versionName,
+        build_number: buildNumber,
+        release_note: releaseNote,
+        release_note_language: releaseNoteLanguage,
+        ...(buildExtra ? { build_extra: buildExtra } : {}),
+    };
 
     console.log("📦 Executing Fastlane lane 'deploy' for Android build...");
     await Fastlane.run(

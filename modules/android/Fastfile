@@ -10,6 +10,7 @@ platform :android do
     build_number = options[:build_number]
     release_note = options[:release_note]
     release_note_language = options[:release_note_language]
+    build_extra = options[:build_extra]
 
     # Determine whether to submit for automatic review
     auto_review_submit = !release_note.nil? && release_note.strip != ""
@@ -23,8 +24,15 @@ platform :android do
     # The path is resolved relative to this `fastfile/` directory.
     output_path = File.expand_path("../../build/app/outputs/bundle/release/app-release.aab", __dir__)
 
+    command = [
+      "flutter build appbundle --release",
+      "--build-name=#{version_name}",
+      "--build-number=#{build_number}",
+      build_extra
+    ].compact.join(" ").strip
+
     # Build the Android app
-    sh("flutter build appbundle --release --build-name=#{version_name} --build-number=#{build_number}")
+    sh(command)
 
     # Upload to Play Store
     upload_args = {

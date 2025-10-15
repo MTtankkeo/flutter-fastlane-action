@@ -12,6 +12,7 @@ platform :ios do
     release_note_language = options[:release_note_language]
     skip_wait_processing = options[:skip_wait_processing] == "true"
     bundle_identifier = options[:bundle_identifier]
+    build_extra = options[:build_extra]
     ios_dir = File.expand_path("../", __dir__)
 
     # Determine whether to submit for automatic review
@@ -61,8 +62,16 @@ platform :ios do
       plist_content.gsub!("{provisioning_profile_uuid}", profile_uuid)
       File.write(modified_option_path, plist_content)
 
+      command = [
+        "flutter build ipa --release",
+        "--build-name=#{version_name}",
+        "--build-number=#{build_number}",
+        "--export-options-plist #{modified_option_path}",
+        build_extra
+      ].compact.join(" ").strip
+
       # Build the iOS app
-      sh("flutter build ipa --release --build-name=#{version_name} --build-number=#{build_number} --export-options-plist #{modified_option_path}")
+      sh(command)
 
       # The absolute path where the built iOS App File (IPA) will be saved.
       # The path is resolved relative to this `fastfile/` directory.

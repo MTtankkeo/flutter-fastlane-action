@@ -91,3 +91,9 @@ inputs:
   ios-dir:
     description: "Directory of the iOS project"
     required: false
+
+  build-extra:
+    description: >
+      Additional Flutter build options or flags.
+      Can include multiple tokens like '--flavor prod "lib/main_prod.dart"'.
+    required: false
