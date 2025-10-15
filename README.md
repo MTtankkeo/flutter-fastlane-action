@@ -24,7 +24,7 @@ Before using this action, the GitHub Actions runner must have the following setu
 
 ```yml
 - name: Deploy Android and iOS
-  uses: MTtankkeo/flutter-fastlane-action@v1.0
+  uses: MTtankkeo/flutter-fastlane-action@v1.1
   with:
     version-name: ${{ github.event.inputs.VERSION_NAME }}
     build-number: ${{ github.event.inputs.BUILD_NUMBER }}
@@ -35,6 +35,16 @@ Before using this action, the GitHub Actions runner must have the following setu
     appstore-connect-key-id: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
     appstore-connect-key: ${{ secrets.APP_STORE_CONNECT_KEY }}
     appstore-team-id: ${{ secrets.APP_STORE_TEAM_ID }}
+```
+
+### How to set additional Flutter build options?
+Sometimes you may need to provide extra build options to Flutter, like choosing a flavor or specifying a different main entrypoint. 
+
+You can do this easily with the `build-extra` input, which passes any additional arguments directly to the Flutter build command.
+
+```yml
+# Build a production flavor with a custom entrypoint.
+build-extra: --flavor prod "lib/main_prod.dart"
 ```
 
 ## GitHub Actions Inputs
@@ -64,3 +74,4 @@ These are the input parameters for the GitHub Actions workflow.
 | flutter-dir | Directory of the Flutter project | String? |
 | android-dir | Directory of the Android project | String? |
 | ios-dir | Directory of the iOS project | String? |
+| build-extra | Additional Flutter build options or flags. Can include multiple tokens like '--flavor prod "lib/main_prod.dart"'. | String? |
