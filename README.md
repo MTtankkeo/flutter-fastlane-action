@@ -1,6 +1,9 @@
 # Introduction
 This Flutter package provides a one-step CI/CD solution for Flutter apps. For a project without any Fastlane setup, it automatically configures all necessary **Fastlane settings**, builds your **Android** and **iOS** apps, and deploys them to **Google Play** and the **App Store** with zero manual setup. Developers only need to provide **six essential configuration values** in GitHub Secrets.
 
+> [!TIP]
+> If you are new to Fastlane or CI/CD, use [GitHub Wiki - Basic-Settings](https://github.com/MTtankkeo/flutter-fastlane-action/wiki/Basic-Settings) to learn the basic concepts and usage, and follow along to apply them to your project.
+
 ### Tested And Supported Runners
 
 | 🍎 OS Type        | ⚡ Status | ⏳ Average     |
