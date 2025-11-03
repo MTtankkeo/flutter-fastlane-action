@@ -1,4 +1,4 @@
-import { exec, ExecOptions } from "@actions/exec";
+import { exec } from "@actions/exec";
 
 /** Utility class for running Fastlane commands programmatically. */
 export class Fastlane {

@@ -8,7 +8,13 @@ const plugins = [
     resolve(), // Include `node_modules`
     commonjs(),
     importAsString({
-        include: [/Gemfile/g, /Fastfile/g, /Appfile/g, /Matchfile/g, /.plist$/i],
+        include: [
+            "**/Fastfile",
+            "**/Matchfile",
+            "**/Appfile",
+            "**/*.plist",
+            "**/Gemfile",
+        ],
     }),
     terser(),
     typescript({
