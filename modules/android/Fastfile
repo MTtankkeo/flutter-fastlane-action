@@ -11,6 +11,7 @@ platform :android do
     release_note = options[:release_note]
     release_note_language = options[:release_note_language]
     build_extra = options[:build_extra]
+    build_dest_path = options[:build_dest_path]
 
     # Determine whether to submit for automatic review
     auto_review_submit = !release_note.nil? && release_note.strip != ""
@@ -33,6 +34,17 @@ platform :android do
     # The absolute path where the built Android App Bundle (AAB) will be saved.
     # The path is resolved relative to this `fastfile/` directory.
     output_path = Dir.glob(File.expand_path("../../build/app/outputs/bundle/**/*.aab", __dir__)).first
+
+    # Determine the Flutter project root directory.
+    flutter_root = File.expand_path("../..", __dir__)
+
+    # Resolve the destination path for the AAB relative to the Flutter root.
+    dest_path = File.expand_path(build_dest_path, flutter_root)
+
+    # Ensure the destination directory exists, then copy the AAB file there.
+    require 'fileutils'
+    FileUtils.mkdir_p(File.dirname(dest_path))
+    FileUtils.cp(output_path, dest_path)
 
     # Upload to Play Store
     upload_args = {

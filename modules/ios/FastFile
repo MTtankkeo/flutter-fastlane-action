@@ -13,6 +13,7 @@ platform :ios do
     skip_wait_processing = options[:skip_wait_processing] == "true"
     bundle_identifier = options[:bundle_identifier]
     build_extra = options[:build_extra]
+    build_dest_path = options[:build_dest_path]
     ios_dir = File.expand_path("../", __dir__)
 
     # Determine whether to submit for automatic review
@@ -76,6 +77,17 @@ platform :ios do
       # The absolute path where the built iOS App File (IPA) will be saved.
       # The path is resolved relative to this `fastfile/` directory.
       output_path = Dir.glob(File.expand_path("../../build/ios/ipa/**/*.ipa", __dir__)).first
+
+      # Determine the Flutter project root directory.
+      flutter_root = File.expand_path("../..", __dir__)
+
+      # Resolve the destination path for the AAB relative to the Flutter root.
+      dest_path = File.expand_path(build_dest_path, flutter_root)
+
+      # Ensure the destination directory exists, then copy the AAB file there.
+      require 'fileutils'
+      FileUtils.mkdir_p(File.dirname(dest_path))
+      FileUtils.cp(output_path, dest_path)
 
       # Upload the build
       if auto_review_submit == false

@@ -54,6 +54,8 @@ function isValidLanguageRegion(langCode: string) {
     const androidDir = getInput("android-dir") || "./android";
     const iosDir = getInput("ios-dir") || "./ios";
     const buildExtra = getInput("build-extra") || null;
+    const aabDestPath = getInput("aab-dest-path") || "./build/release.aab";
+    const ipaDestPath = getInput("ipa-dest-path") || "./build/release.ipa";
 
     // Main github action workspace absolute path.
     const workspaceDir = process.env.GITHUB_WORKSPACE || process.cwd();
@@ -233,7 +235,10 @@ function isValidLanguageRegion(langCode: string) {
         join(pubspecDir, androidDir, "fastlane"),
         "android",
         "deploy",
-        requiredOptions,
+        {
+            ...requiredOptions,
+            "build_dest_path": aabDestPath,
+        },
     );
 
     console.log("📦 Executing Fastlane lane 'deploy' for iOS build...");
@@ -244,6 +249,7 @@ function isValidLanguageRegion(langCode: string) {
         {
             ...requiredOptions,
             "pubspec_name": pubspecName,
+            "build_dest_path": ipaDestPath,
             "match_keychain_password": matchKeychainPassword,
             "skip_wait_processing": skipWaitProcessing,
             "bundle_identifier": iosAppId,

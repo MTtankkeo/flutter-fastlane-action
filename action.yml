@@ -97,3 +97,11 @@ inputs:
       Additional Flutter build options or flags.
       Can include multiple tokens like '--flavor prod "lib/main_prod.dart"'.
     required: false
+
+  aab-dest-path:
+    description: The destination path where the built Android AAB file will be copied.
+    required: false
+
+  ipa-dest-path:
+    description: The destination path where the built iOS IPA file will be copied.
+    required: false
