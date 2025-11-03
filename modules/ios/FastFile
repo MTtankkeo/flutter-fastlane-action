@@ -75,7 +75,7 @@ platform :ios do
 
       # The absolute path where the built iOS App File (IPA) will be saved.
       # The path is resolved relative to this `fastfile/` directory.
-      output_path = Dir.glob(File.expand_path("../../build/ios/ipa/*.ipa", __dir__)).first
+      output_path = Dir.glob(File.expand_path("../../build/ios/ipa/**/*.ipa", __dir__)).first
 
       # Upload the build
       if auto_review_submit == false

@@ -20,10 +20,6 @@ platform :android do
       release_note = release_note.gsub("\\n", "\n")
     end
 
-    # The absolute path where the built Android App Bundle (AAB) will be saved.
-    # The path is resolved relative to this `fastfile/` directory.
-    output_path = Dir.glob(File.expand_path("../../build/app/outputs/bundle/release/*.aab", __dir__)).first
-
     command = [
       "flutter build appbundle --release",
       "--build-name=#{version_name}",
@@ -33,6 +29,10 @@ platform :android do
 
     # Build the Android app
     sh(command)
+
+    # The absolute path where the built Android App Bundle (AAB) will be saved.
+    # The path is resolved relative to this `fastfile/` directory.
+    output_path = Dir.glob(File.expand_path("../../build/app/outputs/bundle/**/*.aab", __dir__)).first
 
     # Upload to Play Store
     upload_args = {
