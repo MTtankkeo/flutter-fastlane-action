@@ -105,3 +105,9 @@ inputs:
   ipa-dest-path:
     description: The destination path where the built iOS IPA file will be copied.
     required: false
+
+  draft:
+    description: >
+      Whether to upload the build as a draft on Google Play
+      (true = draft, false = completed). Only used for Android builds.
+    required: false

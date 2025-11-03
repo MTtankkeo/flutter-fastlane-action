@@ -10,7 +10,7 @@ platform :ios do
     build_number = options[:build_number]
     release_note = options[:release_note]
     release_note_language = options[:release_note_language]
-    skip_wait_processing = options[:skip_wait_processing] == "true"
+    skip_wait_processing = options[:skip_wait_processing]
     bundle_identifier = options[:bundle_identifier]
     build_extra = options[:build_extra]
     build_dest_path = options[:build_dest_path]
@@ -102,6 +102,7 @@ platform :ios do
           ipa: output_path,
           api_key: api_key,
           release_notes: {release_note_language => release_note},
+          submit_for_review: auto_review_submit,
           skip_waiting_for_build_processing: skip_wait_processing,
         )
       end

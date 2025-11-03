@@ -56,6 +56,7 @@ function isValidLanguageRegion(langCode: string) {
     const buildExtra = getInput("build-extra") || null;
     const aabDestPath = getInput("aab-dest-path") || "./build/release.aab";
     const ipaDestPath = getInput("ipa-dest-path") || "./build/release.ipa";
+    const draft = getInput("draft") || "false";
 
     // Main github action workspace absolute path.
     const workspaceDir = process.env.GITHUB_WORKSPACE || process.cwd();
@@ -237,6 +238,7 @@ function isValidLanguageRegion(langCode: string) {
         "deploy",
         {
             ...requiredOptions,
+            "draft": draft,
             "build_dest_path": aabDestPath,
         },
     );

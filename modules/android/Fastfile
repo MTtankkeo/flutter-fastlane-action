@@ -12,6 +12,7 @@ platform :android do
     release_note_language = options[:release_note_language]
     build_extra = options[:build_extra]
     build_dest_path = options[:build_dest_path]
+    isDraft = options[:draft]
 
     # Determine whether to submit for automatic review
     auto_review_submit = !release_note.nil? && release_note.strip != ""
@@ -50,6 +51,7 @@ platform :android do
     upload_args = {
       aab: output_path,
       track: auto_review_submit ? "production" : "internal",
+      release_status: isDraft ? "draft" : "completed",
       skip_upload_apk: true,
       skip_upload_metadata: true,
       skip_upload_images: true,
