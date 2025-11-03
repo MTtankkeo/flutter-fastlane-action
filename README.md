@@ -24,7 +24,7 @@ Before using this action, the GitHub Actions runner must have the following setu
 
 ```yml
 - name: Deploy Android and iOS
-  uses: MTtankkeo/flutter-fastlane-action@v1.1
+  uses: MTtankkeo/flutter-fastlane-action@v1.2
   with:
     version-name: ${{ github.event.inputs.VERSION_NAME }}
     build-number: ${{ github.event.inputs.BUILD_NUMBER }}
