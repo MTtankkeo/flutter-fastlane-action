@@ -22,7 +22,7 @@ platform :android do
 
     # The absolute path where the built Android App Bundle (AAB) will be saved.
     # The path is resolved relative to this `fastfile/` directory.
-    output_path = File.expand_path("../../build/app/outputs/bundle/release/app-release.aab", __dir__)
+    output_path = Dir.glob(File.expand_path("../../build/app/outputs/bundle/release/*.aab", __dir__)).first
 
     command = [
       "flutter build appbundle --release",
