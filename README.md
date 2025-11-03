@@ -44,7 +44,7 @@ You can do this easily with the `build-extra` input, which passes any additional
 
 ```yml
 # Build a production flavor with a custom entrypoint.
-build-extra: --flavor prod "lib/main_prod.dart"
+build-extra: --flavor prod --target "lib/main_prod.dart"
 ```
 
 ## GitHub Actions Inputs
