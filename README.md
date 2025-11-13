@@ -6,11 +6,12 @@ This Flutter package provides a one-step CI/CD solution for Flutter apps. For a 
 
 ### Tested And Supported Runners
 
-| 🍎 OS Type        | ⚡ Status | ⏳ Average     |
+| 🍎 OS Type        | ⚡ Status | ⏳ Average (One Platform) |
 | ----------------- | -------- | --------------- |
 | macos-14          | 🟡       | Testing...      |
-| macos-15 (latest) | 🟢       | 15 - 30 Minutes |
+| macos-15 (latest) | 🟢       | 10 - 15 Minutes |
 | macos-26          | 🟡       | Testing...      |
+| ubuntu-latest     | 🟢       | 15 - 20 Minutes |
 
 ## Useage
 Before using this action, the GitHub Actions runner must have the following setup:
@@ -75,3 +76,4 @@ These are the input parameters for the GitHub Actions workflow.
 | android-dir | Directory of the Android project | String? |
 | ios-dir | Directory of the iOS project | String? |
 | build-extra | Additional Flutter build options or flags. Can include multiple tokens like '--flavor prod "lib/main_prod.dart"'. | String? |
+| platform | Specifies which platform to build: android, ios, or all. iOS builds require a macOS runner. | String? |

@@ -111,3 +111,10 @@ inputs:
       Whether to upload the build as a draft on Google Play
       (true = draft, false = completed). Only used for Android builds.
     required: false
+
+  platform:
+    description: >
+      Specifies which platform to build: android, ios, or all.
+      iOS builds require a macOS runner.
+    default: all
+    required: false
