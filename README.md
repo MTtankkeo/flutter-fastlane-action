@@ -11,6 +11,7 @@ This Flutter package provides a one-step CI/CD solution for Flutter apps. For a 
 | macos-14          | 🟡       | Testing...      |
 | macos-15 (latest) | 🟢       | 15 - 30 Minutes |
 | macos-26          | 🟡       | Testing...      |
+| ubuntu-latest     | 🟢       | 15 - 30 Minutes |
 
 ## Useage
 Before using this action, the GitHub Actions runner must have the following setup:

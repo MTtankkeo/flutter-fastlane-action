@@ -111,3 +111,11 @@ inputs:
       Whether to upload the build as a draft on Google Play
       (true = draft, false = completed). Only used for Android builds.
     required: false
+
+  platform:
+    description: >
+      Specifies which platform(s) to build and deploy.
+      Available options are 'android', 'ios', or 'all'.
+      Use this to limit the workflow to a specific platform.
+    required: false
+    default: all

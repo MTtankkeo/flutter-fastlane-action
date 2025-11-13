@@ -24,6 +24,7 @@ import { Pubspec } from "./components/pubspec";
 import { nanoid } from "nanoid";
 import { Fastlane } from "./components/fastlane";
 import localeCode from "locale-code";
+import * as os from "os";
 
 function isValidLanguageRegion(langCode: string) {
   const [lang, region] = langCode.split('-');
@@ -34,6 +35,9 @@ function isValidLanguageRegion(langCode: string) {
 }
 
 (async () => {
+    // Determines if the runner is macOS, required for iOS builds.
+    const isMac = os.platform() === "darwin";
+
     // GitHub Actions inputs
     const appId = getInput("app-id");
     const versionName = getInput("version-name");
@@ -57,6 +61,21 @@ function isValidLanguageRegion(langCode: string) {
     const aabDestPath = getInput("aab-dest-path") || "./build/release.aab";
     const ipaDestPath = getInput("ipa-dest-path") || "./build/release.ipa";
     const draft = getInput("draft") || "false";
+
+    // Sets the default platform to 'all' when running on macOS,
+    // or 'android' when running on other environments.
+    const platform = getInput("platform")?.toLowerCase() || (isMac ? "all" : "android");
+
+    // Validate the 'platform' input to ensure it is one of the supported values.
+    if (!(platform == "all"
+       || platform == "ios"
+       || platform == "android")) {
+        throw new Error("Invalid platform input. Supported values are 'android', 'ios', or 'all'.");
+    }
+
+    // Determines which platforms should be built based on the given 'platform' input.
+    const shouldBuildAndroid = platform == "all" || platform == "android";
+    const shouldBuildIos = platform == "all" || platform == "ios";
 
     // Main github action workspace absolute path.
     const workspaceDir = process.env.GITHUB_WORKSPACE || process.cwd();
@@ -179,49 +198,59 @@ function isValidLanguageRegion(langCode: string) {
         console.error("Failed to accept Android licenses:", error);
     }
 
-    // Install Fastlane using Homebrew for iOS/Android deployment tasks.
-    await exec("brew install fastlane");
+    // Install Fastlane using Homebrew or RubyGems for iOS/Android deployment tasks.
+    if (isMac) {
+        console.log("Installing Fastlane via Homebrew...");
+        await exec("brew install fastlane");
+    } else {
+        console.log("Installing Fastlane via RubyGems...");
+        await exec("sudo gem install fastlane -NV");
+    }
 
     // Install dependencies for Flutter.
     await exec("flutter pub get");
 
-    console.log("📄 Adding the fastlane folder in the android directory.");
-    mkdirSync(join(pubspecDir, androidDir, "fastlane"), {recursive: true});
+    if (shouldBuildAndroid) {
+        console.log("📄 Adding the fastlane folder in the android directory.");
+        mkdirSync(join(pubspecDir, androidDir, "fastlane"), {recursive: true});
 
-    console.log("📄 Adding Fastfile in the android directory.");
-    writeFileSync(join(pubspecDir, androidDir, "fastlane", "Fastfile"), androidFastfileContent)
+        console.log("📄 Adding Fastfile in the android directory.");
+        writeFileSync(join(pubspecDir, androidDir, "fastlane", "Fastfile"), androidFastfileContent)
 
-    console.log("📄 Adding Appfile in the android directory.");
-    writeFileSync(
-        join(pubspecDir, androidDir, "fastlane", "Appfile"),
-        (androidAppfileContent as string)
-            .replace("{service-account-path}", serviceAccountPath)
-            .replace("{app-bundle-id}", androidAppId)
-    );
+        console.log("📄 Adding Appfile in the android directory.");
+        writeFileSync(
+            join(pubspecDir, androidDir, "fastlane", "Appfile"),
+            (androidAppfileContent as string)
+                .replace("{service-account-path}", serviceAccountPath)
+                .replace("{app-bundle-id}", androidAppId)
+        );
+    }
 
-    console.log("📄 Adding the fastlane folder in the ios directory.");
-    mkdirSync(join(pubspecDir, iosDir, "fastlane"), {recursive: true});
+    if (shouldBuildIos) {
+        console.log("📄 Adding the fastlane folder in the ios directory.");
+        mkdirSync(join(pubspecDir, iosDir, "fastlane"), {recursive: true});
 
-    console.log("📄 Adding Fastfile in the ios directory.");
-    writeFileSync(join(pubspecDir, iosDir, "fastlane", "Fastfile"), iosFastfileContent);
+        console.log("📄 Adding Fastfile in the ios directory.");
+        writeFileSync(join(pubspecDir, iosDir, "fastlane", "Fastfile"), iosFastfileContent);
 
-    console.log("📄 Adding Appfile in the ios directory.");
-    writeFileSync(
-        join(pubspecDir, iosDir, "fastlane", "Appfile"),
-        (iosAppfileContent as string)
-            .replace("{app-bundle-id}", iosAppId)
-    );
+        console.log("📄 Adding Appfile in the ios directory.");
+        writeFileSync(
+            join(pubspecDir, iosDir, "fastlane", "Appfile"),
+            (iosAppfileContent as string)
+                .replace("{app-bundle-id}", iosAppId)
+        );
 
-    console.log("📄 Adding Matchfile in the ios directory.");
-    writeFileSync(
-        join(pubspecDir, iosDir, "fastlane", "Matchfile"),
-        (matchFileContent as string)
-            .replace("{app-bundle-id}", iosAppId)
-            .replace("{match-repository}", matchRepository)
-    );
+        console.log("📄 Adding Matchfile in the ios directory.");
+        writeFileSync(
+            join(pubspecDir, iosDir, "fastlane", "Matchfile"),
+            (matchFileContent as string)
+                .replace("{app-bundle-id}", iosAppId)
+                .replace("{match-repository}", matchRepository)
+        );
 
-    console.log("📄 Adding ExportOptions.plist in the ios directory.");
-    writeFileSync(join(pubspecDir, iosDir, "fastlane", "ExportOptions.plist"), exportOptionsContent);
+        console.log("📄 Adding ExportOptions.plist in the ios directory.");
+        writeFileSync(join(pubspecDir, iosDir, "fastlane", "ExportOptions.plist"), exportOptionsContent);
+    }
 
     const requiredOptions: Record<string, string | number> = {
         version_name: versionName,
@@ -231,39 +260,49 @@ function isValidLanguageRegion(langCode: string) {
         ...(buildExtra ? { build_extra: buildExtra } : {}),
     };
 
-    console.log("📦 Executing Fastlane lane 'deploy' for Android build...");
-    await Fastlane.run(
-        join(pubspecDir, androidDir, "fastlane"),
-        "android",
-        "deploy",
-        {
-            ...requiredOptions,
-            "draft": draft,
-            "build_dest_path": aabDestPath,
-        },
-    );
+    /// Performs the fastlane about Android.
+    if (shouldBuildAndroid) {
+        console.log("📦 Executing Fastlane lane 'deploy' for Android build...");
+        await Fastlane.run(
+            join(pubspecDir, androidDir, "fastlane"),
+            "android",
+            "deploy",
+            {
+                ...requiredOptions,
+                "draft": draft,
+                "build_dest_path": aabDestPath,
+            },
+        );
+    }
 
-    console.log("📦 Executing Fastlane lane 'deploy' for iOS build...");
-    await Fastlane.run(
-        join(pubspecDir, iosDir, "fastlane"),
-        "ios",
-        "deploy",
-        {
-            ...requiredOptions,
-            "pubspec_name": pubspecName,
-            "build_dest_path": ipaDestPath,
-            "match_keychain_password": matchKeychainPassword,
-            "skip_wait_processing": skipWaitProcessing,
-            "bundle_identifier": iosAppId,
-            "appstore_team_id": appstoreTeamId,
-        },
-        { // ENV
-            "APPSTORE_CONNECT_ISSUER_ID": appstoreConnectIssuerId,
-            "APPSTORE_CONNECT_KEY_ID": appstoreConnectKeyId,
-            "APPSTORE_CONNECT_KEY": appstoreConnectKey,
-            "MATCH_PASSWORD": matchPassword,
-        },
-    );
+    /// Performs the fastlane about iOS.
+    if (shouldBuildIos) {
+        if (!isMac) {
+            throw new Error(`iOS builds can only be run on a macOS runner`);
+        }
+
+        console.log("📦 Executing Fastlane lane 'deploy' for iOS build...");
+        await Fastlane.run(
+            join(pubspecDir, iosDir, "fastlane"),
+            "ios",
+            "deploy",
+            {
+                ...requiredOptions,
+                "pubspec_name": pubspecName,
+                "build_dest_path": ipaDestPath,
+                "match_keychain_password": matchKeychainPassword,
+                "skip_wait_processing": skipWaitProcessing,
+                "bundle_identifier": iosAppId,
+                "appstore_team_id": appstoreTeamId,
+            },
+            { // ENV
+                "APPSTORE_CONNECT_ISSUER_ID": appstoreConnectIssuerId,
+                "APPSTORE_CONNECT_KEY_ID": appstoreConnectKeyId,
+                "APPSTORE_CONNECT_KEY": appstoreConnectKey,
+                "MATCH_PASSWORD": matchPassword,
+            },
+        );
+    }
 
     console.log("🚀 All platform builds have been deployed successfully.");
 
