@@ -5,13 +5,14 @@ This Flutter package provides a one-step CI/CD solution for Flutter apps. For a 
 > If you are new to Fastlane or CI/CD, use [GitHub Wiki - Basic-Settings](https://github.com/MTtankkeo/flutter-fastlane-action/wiki/Basic-Settings) to learn the basic concepts and usage, and follow along to apply them to your project.
 
 ### Tested And Supported Runners
+`🟢 Stable` `🟡 Testing...`
 
-| 🍎 OS Type        | ⚡ Status | ⏳ Average (One Platform) |
-| ----------------- | -------- | --------------- |
-| macos-14          | 🟡       | Testing...      |
-| macos-15 (latest) | 🟢       | 10 - 15 Minutes |
-| macos-26          | 🟡       | Testing...      |
-| ubuntu-latest     | 🟢       | 15 - 20 Minutes |
+| 🍎 OS Type        | ⚡ Status | 🧩 Support |
+| ----------------- | -------- | -------------- |
+| macos-14          | 🟡       | Android, iOS   |
+| macos-15 (latest) | 🟢       | Android, iOS   |
+| macos-26          | 🟡       | Android, iOS   |
+| ubuntu-latest     | 🟢       | Android        |
 
 ## Useage
 Before using this action, the GitHub Actions runner must have the following setup:
@@ -25,7 +26,7 @@ Before using this action, the GitHub Actions runner must have the following setu
 
 ```yml
 - name: Deploy Android and iOS
-  uses: MTtankkeo/flutter-fastlane-action@v1.2
+  uses: MTtankkeo/flutter-fastlane-action@v1.3
   with:
     version-name: ${{ github.event.inputs.VERSION_NAME }}
     build-number: ${{ github.event.inputs.BUILD_NUMBER }}
@@ -46,6 +47,20 @@ You can do this easily with the `build-extra` input, which passes any additional
 ```yml
 # Build a production flavor with a custom entrypoint.
 build-extra: --flavor prod --target "lib/main_prod.dart"
+```
+
+### How to build only one platform?
+You can control which platforms to build using the `platform` input:
+
+```yml
+# Build only Android
+platform: android
+
+# Build only iOS
+platform: ios
+
+# Build both platforms
+platform: all
 ```
 
 ## GitHub Actions Inputs

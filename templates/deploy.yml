@@ -8,6 +8,15 @@ name: Deploy
 # - APP_STORE_TEAM_ID
 # - MATCH_PASSWORD
 # - SSH_PRIVATE_KEY
+#
+# NOTE:
+# ⚠️ This workflow is only a minimal example for demonstration.
+#
+# 🚀 For real production usage, consider:
+# - Adding caching (Flutter, Gradle, CocoaPods, Android SDK)
+# - Using Android/iOS builds in parallel
+#
+# 💸 These optimizations can significantly reduce build time and GitHub Actions cost.
 
 on:
   workflow_dispatch:
