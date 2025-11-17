@@ -40,9 +40,9 @@ export class FastlaneIosRunner extends FastlaneRunner {
         // Replace '_' with '-' to match iOS app ID format convention.
         if (config.iosAppId.includes("_")) {
             const oldAppId = config.iosAppId;
-            const newAppId = config.iosAppId = config.iosAppId.replaceAll("_", "-");
+            const newAppId = config.iosAppId.replaceAll("_", "-");
             config.iosAppId = newAppId;
-            console.log(`Warning: iOS app ID contained '_' and was converted to '${config.iosAppId}' (original: '${oldAppId}')`);
+            console.log(`Warning: iOS app ID contained '_' and was converted to '${newAppId}' (original: '${oldAppId}')`);
         }
     
         // If iOS bundle ID is not provided, attempt to infer
@@ -127,7 +127,7 @@ export class FastlaneIosRunner extends FastlaneRunner {
 
         // Notify that the upload has been completed, but the new build
         // may take some time to appear on App Store or TestFlight.
-        if (Boolean(config.skipWaitProcessing)) {
+        if (config.skipWaitProcessing === "true") {
             console.log(
                 "The deployment has been completed, but it may take some time " +
                 "for the new version to appear on the App Store or TestFlight."

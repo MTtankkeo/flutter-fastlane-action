@@ -77,7 +77,7 @@ export class FastlaneAndroidRunner extends FastlaneRunner {
                 const solutions = [
                     `Provide it via 'service-account-json' input`,
                     `Place the Google service account JSON file at '${serviceAccountFullPath}'`,
-                    `Or specify a different directory using 'service-account-dir' input and place the JSON file there`
+                    `Or specify a different directory using 'service-account-path' input and place the JSON file there`
                 ];
 
                 throw new Error(
