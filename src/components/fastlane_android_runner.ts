@@ -39,15 +39,27 @@ export class FastlaneAndroidRunner extends FastlaneRunner {
         // If Android app bundle ID is not provided, attempt to infer
         // it based on the typical Flutter project structure.
         if (config.androidAppId == "") {
-            const target = join(pubspecDir, androidDir, "app", "build.gradle.kts");
-            const buffer = readFileSync(target).toString();
-            const result = /(?<=applicationId\s*=\s*")[\w.]+(?=")/g.exec(buffer);
+            const gradlePaths = [
+                join(pubspecDir, androidDir, "app", "build.gradle.kts"),
+                join(pubspecDir, androidDir, "app", "build.gradle"),
+            ];
 
-            if (result?.length == 1) {
-                config.androidAppId = result[0];
+            const target = gradlePaths.find((p) => existsSync(p));
+            if (target) {
+                const buffer = readFileSync(target).toString();
+                const result = /(?<=applicationId\s*=?\s*")[\w.]+(?=")/g.exec(buffer);
+
+                if (result?.length == 1) {
+                    config.androidAppId = result[0];
+                } else {
+                    throw new Error(
+                        "Android Application ID not found.\n" +
+                        "(💡 You can either provide 'app-id' or both 'android-app-id' and 'ios-app-id' in GitHub Action inputs.)"
+                    );
+                }
             } else {
                 throw new Error(
-                    "Android Application ID not found.\n" +
+                    "Android build.gradle not found.\n" +
                     "(💡 You can either provide 'app-id' or both 'android-app-id' and 'ios-app-id' in GitHub Action inputs.)"
                 );
             }

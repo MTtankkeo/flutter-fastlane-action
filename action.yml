@@ -39,11 +39,11 @@ inputs:
     required: false
 
   match-repository:
-    description: "Repository for Fastlane match certificates"
+    description: "Repository for Fastlane match certificates (Required for iOS)"
     required: false
 
   match-password:
-    description: "Password for Fastlane match"
+    description: "Password for Fastlane match (Required for iOS)"
     required: false
 
   match-keychain-password:
@@ -51,19 +51,19 @@ inputs:
     required: false
 
   appstore-connect-issuer-id:
-    description: "Issuer ID for App Store Connect API key"
+    description: "Issuer ID for App Store Connect API key (Required for iOS)"
     required: false
 
   appstore-connect-key-id:
-    description: "Key ID for App Store Connect API key"
+    description: "Key ID for App Store Connect API key (Required for iOS)"
     required: false
 
   appstore-connect-key:
-    description: "API key content for App Store Connect"
+    description: "API key content for App Store Connect (Required for iOS)"
     required: false
 
   appstore-team-id:
-    description: "Team ID for the Apple Developer account"
+    description: "Team ID for the Apple Developer account (Required for iOS)"
     required: false
 
   service-account-path:
