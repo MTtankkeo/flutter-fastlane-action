@@ -40,11 +40,11 @@ inputs:
 
   match-repository:
     description: "Repository for Fastlane match certificates"
-    required: true
+    required: false
 
   match-password:
     description: "Password for Fastlane match"
-    required: true
+    required: false
 
   match-keychain-password:
     description: "Optional keychain password for Fastlane match"
@@ -52,19 +52,19 @@ inputs:
 
   appstore-connect-issuer-id:
     description: "Issuer ID for App Store Connect API key"
-    required: true
+    required: false
 
   appstore-connect-key-id:
     description: "Key ID for App Store Connect API key"
-    required: true
+    required: false
 
   appstore-connect-key:
     description: "API key content for App Store Connect"
-    required: true
+    required: false
 
   appstore-team-id:
     description: "Team ID for the Apple Developer account"
-    required: true
+    required: false
 
   service-account-path:
     description: "File path to store the Google service account JSON"
