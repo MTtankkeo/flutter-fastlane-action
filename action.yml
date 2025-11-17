@@ -39,32 +39,32 @@ inputs:
     required: false
 
   match-repository:
-    description: "Repository for Fastlane match certificates"
-    required: true
+    description: "Repository for Fastlane match certificates (Required for iOS)"
+    required: false
 
   match-password:
-    description: "Password for Fastlane match"
-    required: true
+    description: "Password for Fastlane match (Required for iOS)"
+    required: false
 
   match-keychain-password:
     description: "Optional keychain password for Fastlane match"
     required: false
 
   appstore-connect-issuer-id:
-    description: "Issuer ID for App Store Connect API key"
-    required: true
+    description: "Issuer ID for App Store Connect API key (Required for iOS)"
+    required: false
 
   appstore-connect-key-id:
-    description: "Key ID for App Store Connect API key"
-    required: true
+    description: "Key ID for App Store Connect API key (Required for iOS)"
+    required: false
 
   appstore-connect-key:
-    description: "API key content for App Store Connect"
-    required: true
+    description: "API key content for App Store Connect (Required for iOS)"
+    required: false
 
   appstore-team-id:
-    description: "Team ID for the Apple Developer account"
-    required: true
+    description: "Team ID for the Apple Developer account (Required for iOS)"
+    required: false
 
   service-account-path:
     description: "File path to store the Google service account JSON"

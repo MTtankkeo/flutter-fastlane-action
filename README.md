@@ -70,20 +70,20 @@ These are the input parameters for the GitHub Actions workflow.
 
 | Name | Description | Type |
 | ---- | ----------- | ---- |
-| app-id | Common app identifier for both platforms (optional if platform-specific IDs are provided) | String? |
-| android-app-id | Application ID for Android | String? |
-| ios-app-id | Application bundle identifier for iOS | String? |
 | version-name🔹 | Version name for the build | String |
 | build-number🔹 | Build number for the build | Number |
 | release-note | Release note for the build | String? |
 | release-note-language | Language code for the release note (e.g., 'en-US', 'ko-KR') | String? |
-| match-repository🔹 | Repository for Fastlane match certificates | String  |
-| match-password🔹 | Password for Fastlane match | String |
+| app-id | Common app identifier for both platforms (optional if platform-specific IDs are provided) | String? |
+| android-app-id | Application ID for Android | String? |
+| ios-app-id | Application bundle identifier for iOS | String? |
+| match-repository | Repository for Fastlane match certificates | String? |
+| match-password | Password for Fastlane match | String? |
 | match-keychain-password | Optional keychain password for Fastlane match | String? |
-| appstore-connect-issuer-id🔹 | Issuer ID for App Store Connect API key | String  |
-| appstore-connect-key-id🔹 | Key ID for App Store Connect API key | String  |
-| appstore-connect-key🔹 | API key content for App Store Connect | String  |
-| appstore-team-id🔹 | Team ID for the Apple Developer account | String  |
+| appstore-connect-issuer-id | Issuer ID for App Store Connect API key | String? |
+| appstore-connect-key-id | Key ID for App Store Connect API key | String? |
+| appstore-connect-key | API key content for App Store Connect | String? |
+| appstore-team-id | Team ID for the Apple Developer account | String? |
 | service-account-path | File path to store the Google service account JSON | String? |
 | service-account-json | Google service account JSON content for Play Store (Base64-encoded) | Base64? |
 | skip-wait-processing | Skip waiting for build processing after upload (true/false). And corresponds to Fastlane skip_waiting_for_build_processing option | String? |
