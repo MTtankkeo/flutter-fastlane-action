@@ -22,7 +22,7 @@ Before using this action, the GitHub Actions runner must have the following setu
 - SSH keys are configured to access your Fastlane match repository<br>[webfactory/ssh-agent](https://github.com/webfactory/ssh-agent)
 
 ### Example
-> If you want to see an example or reference a template, check the [templates/deploy.yml](templates/deploy.yml) file.
+> If you want to see an example or reference a template, check the [templates/basic_deploy.yml](templates/basic_deploy.yml) or [templates/advanced_depoy.yml](templates/advanced_depoy.yml) files.
 
 ```yml
 - name: Deploy Android and iOS
