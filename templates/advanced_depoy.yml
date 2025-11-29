@@ -8,6 +8,13 @@ name: Deploy
 # - APP_STORE_TEAM_ID
 # - MATCH_PASSWORD
 # - SSH_PRIVATE_KEY
+#
+# NOTE:
+# ⚠️ Make sure to add the `pubspec_version_tool` package 
+# to the `dev_dependencies` field in your project's pubspec.yaml.
+#
+# This allows the build number to be incremented automatically.
+# It is also required for managing the version in CI/CD workflows.
 
 on:
   workflow_dispatch:
@@ -17,11 +24,6 @@ on:
         required: true
         type: string
 
-      BUILD_NUMBER:
-        description: "Build Number (e.g. 43)"
-        required: true
-        type: number
-
       RELEASE_NOTE:
         description: "Release Note (for automatic review submission)"
         required: false
@@ -29,8 +31,40 @@ on:
         type: string
 
 jobs:
+  ready:
+    runs-on: ubuntu-latest
+    outputs:
+      BUILD_NUMBER: ${{ steps.build_number.outputs.BUILD_NUMBER }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Flutter SDK Cache
+        uses: actions/cache@v3
+        with:
+          path: /opt/hostedtoolcache/flutter
+          key: ${{ runner.os }}-flutter-${{ vars.FLUTTER_VERSION }}
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ vars.FLUTTER_VERSION }}
+
+      - name: Setup Build Number
+        id: build_number
+        run: |
+          # Get current build number
+          BUILD_NUMBER=$(dart run pubspec_version_tool get --only-build-number)
+
+          # Increment build number
+          BUILD_NUMBER=$((BUILD_NUMBER + 1))
+
+          # Set output for other steps
+          echo "BUILD_NUMBER=$BUILD_NUMBER" >> $GITHUB_OUTPUT
+
   android:
     runs-on: ubuntu-latest
+    needs: ready
     steps:
       - uses: actions/checkout@v4
 
@@ -80,7 +114,7 @@ jobs:
         with:
           platform: android
           version-name: ${{ github.event.inputs.VERSION_NAME }}
-          build-number: ${{ github.event.inputs.BUILD_NUMBER }}
+          build-number: ${{ needs.ready.outputs.BUILD_NUMBER }}
           release-note: ${{ github.event.inputs.RELEASE_NOTE }}
 
       ## For uploading to GitHub Release.
@@ -92,6 +126,7 @@ jobs:
 
   ios:
     runs-on: macos-latest
+    needs: ready
     steps:
       - uses: actions/checkout@v4
 
@@ -118,7 +153,7 @@ jobs:
         with:
           platform: ios
           version-name: ${{ github.event.inputs.VERSION_NAME }}
-          build-number: ${{ github.event.inputs.BUILD_NUMBER }}
+          build-number: ${{ needs.ready.outputs.BUILD_NUMBER }}
           release-note: ${{ github.event.inputs.RELEASE_NOTE }}
           match-repository: Grimity/grimity-flutter-certs
           match-password: ${{ secrets.MATCH_PASSWORD }}
@@ -134,11 +169,46 @@ jobs:
           name: ios-ipa
           path: ./build/release.ipa
 
+  pubspec:
+    runs-on: ubuntu-latest
+    needs: ready
+    permissions:
+      contents: write # Required for push
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Flutter SDK Cache
+        uses: actions/cache@v3
+        with:
+          path: /opt/hostedtoolcache/flutter
+          key: ${{ runner.os }}-flutter-${{ vars.FLUTTER_VERSION }}
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ vars.FLUTTER_VERSION }}
+
+      - name: Setup Git
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+
+      - name: Update Pubspec
+        run: |
+          VERSION="${{ github.event.inputs.VERSION_NAME }}-${{ needs.ready.outputs.BUILD_NUMBER }}"
+          dart run pubspec_version_tool set "$VERSION"
+          git add .
+          git commit -m "Update pubspec.yaml version to $VERSION"
+          git push origin main
+
   # This job uploads artifacts to a GitHub release, but it is optional.
   # Remove this job if you do not want it.
   release:
     runs-on: ubuntu-latest
-    needs: [android, ios]
+    needs: [ready, android, ios]
     permissions:
       contents: write # Required for push and release operations
       packages: write
@@ -162,7 +232,7 @@ jobs:
             ./build/release.aab
             ./build/release.ipa
           tag_name: v${{ github.event.inputs.VERSION_NAME }}
-          name: "v${{ github.event.inputs.VERSION_NAME }} (Build ${{ github.event.inputs.BUILD_NUMBER }})"
+          name: "v${{ github.event.inputs.VERSION_NAME }} (Build ${{ needs.ready.outputs.BUILD_NUMBER }})"
           body: |
             ## Deployment Information
             > This build was checked out and deployed from [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}).
@@ -170,7 +240,7 @@ jobs:
             | Item | Value |
             | --- | --- |
             | **Build Version** | ${{ github.event.inputs.VERSION_NAME }} |
-            | **Build Number** | ${{ github.event.inputs.BUILD_NUMBER }} |
+            | **Build Number** | ${{ needs.ready.outputs.BUILD_NUMBER }} |
             | **Release Notes** | ${{ github.event.inputs.RELEASE_NOTE }} |
             | **Commit SHA** | ${{ github.sha }} |
             | **Flutter Version** | ${{ vars.FLUTTER_VERSION }} |
