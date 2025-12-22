@@ -55,7 +55,7 @@ function isValidLanguageRegion(langCode: string) {
     }
 
     // Install dependencies for Flutter.
-    await exec("flutter pub get");
+    await exec("flutter pub get", [], {cwd: config.pubspecDir});
 
     // Install Fastlane using Homebrew or RubyGems for iOS/Android deployment tasks.
     if (config.isMac) {
