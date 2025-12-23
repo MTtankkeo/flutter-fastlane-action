@@ -125,6 +125,24 @@ export class FastlaneAndroidRunner extends FastlaneRunner {
                 .replace("{service-account-path}", config.serviceAccountPath)
                 .replace("{app-bundle-id}", config.androidAppId)
         );
+
+        if (config.releaseNote != "") {
+            console.log("📄 Adding the required fastlane android metadata files.");
+            const changelogDir = join(
+                pubspecDir,
+                androidDir,
+                "fastlane",
+                "metadata",
+                "android",
+                config.releaseNoteLanguage,
+                "changelogs",
+            );
+
+            const changelogFile = join(changelogDir, "default.txt");
+
+            mkdirSync(changelogDir, {recursive: true});
+            writeFileSync(changelogFile, config.releaseNote.replaceAll("\\n", "\n"));
+        }
     }
 
     async run(config: Config): Promise<void> {

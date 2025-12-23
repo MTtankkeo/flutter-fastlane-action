@@ -48,25 +48,15 @@ platform :android do
     FileUtils.cp(output_path, dest_path)
 
     # Upload to Play Store
-    upload_args = {
+    upload_to_play_store(
       aab: output_path,
       track: auto_review_submit ? "production" : "internal",
       release_status: isDraft ? "draft" : "completed",
       skip_upload_apk: true,
-      skip_upload_metadata: true,
       skip_upload_images: true,
+      skip_upload_metadata: true,
       skip_upload_screenshots: true,
-      skip_upload_changelogs: true
-    }
-
-    # Define release notes for automatic review submission
-    if auto_review_submit
-      upload_args[:skip_upload_changelogs] = false
-      upload_args[:whats_new] = {
-        release_note_language => release_note
-      }
-    end
-
-    upload_to_play_store(upload_args)
+      skip_upload_changelogs: !auto_review_submit
+    )
   end
 end
