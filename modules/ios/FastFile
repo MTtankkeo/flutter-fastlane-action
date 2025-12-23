@@ -102,8 +102,12 @@ platform :ios do
           ipa: output_path,
           api_key: api_key,
           release_notes: {release_note_language => release_note},
-          submit_for_review: auto_review_submit,
-          skip_waiting_for_build_processing: skip_wait_processing,
+          force: true,
+          skip_metadata: true,
+          skip_screenshots: true,
+          automatic_release: true,
+          submit_for_review: true,
+          run_precheck_before_submit: false,
         )
       end
     end
