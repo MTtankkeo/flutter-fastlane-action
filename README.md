@@ -14,7 +14,7 @@ This Flutter package provides a one-step CI/CD solution for Flutter apps. For a 
 | macos-26          | 🟡       | Android, iOS   |
 | ubuntu-latest     | 🟢       | Android        |
 
-## Useage
+## Usage
 Before using this action, the GitHub Actions runner must have the following setup:
 - A Flutter SDK compatible with your app is installed and configured<br>[subosito/flutter-action](https://github.com/subosito/flutter-action)
 - Java is installed for Android builds<br>[actions/setup-java](https://github.com/actions/setup-java)
