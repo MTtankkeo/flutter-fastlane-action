@@ -15,8 +15,7 @@
     "@types/node": "^24.6.2",
     "rollup": "^4.21.0",
     "rollup-plugin-string-import": "^1.2.6",
-    "rollup-plugin-typescript2": "^0.36.0",
-    "terser": "^5.31.6",
+    "rollup-plugin-typescript2": "^0.37.0",
     "typescript": "^5.5.4"
   },
   "dependencies": {

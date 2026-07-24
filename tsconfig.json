@@ -2,10 +2,12 @@
     "compilerOptions": {
         "strict": true,
         "alwaysStrict": true,
+        "target": "es2023",
         "module": "ESNext",
-        "target": "es2021",
-        "moduleResolution": "Node",
+        "moduleResolution": "bundler",
         "declaration": true,
-        "declarationDir": "./dist/types"
+        "declarationDir": "./dist/types",
+        "rootDir": "./src",
+        "outDir": "./dist"
     }
 }

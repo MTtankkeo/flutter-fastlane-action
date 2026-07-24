@@ -5,6 +5,10 @@ import commonjs from "@rollup/plugin-commonjs";
 import { importAsString } from "rollup-plugin-string-import";
 
 const plugins = [
+    typescript({
+        tsconfig: "./tsconfig.json",
+        useTsconfigDeclarationDir: true
+    }),
     resolve(), // Include `node_modules`
     commonjs(),
     importAsString({
@@ -16,11 +20,6 @@ const plugins = [
             "**/Gemfile",
         ],
     }),
-    terser(),
-    typescript({
-        tsconfig: "./tsconfig.json",
-        useTsconfigDeclarationDir: true
-    })
 ]
 
 /**
@@ -31,7 +30,6 @@ export default {
     plugins: plugins,
     input: "./src/index.ts",
     output: [
-        { file: "./dist/index.esm.js", format: "esm", name: "YourProjectName" },
-        { file: "./dist/index.umd.js", format: "umd", name: "YourProjectName" }
+        { file: "./dist/index.esm.js", format: "esm", name: "YourProjectName" }
     ]
 }
