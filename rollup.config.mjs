@@ -30,6 +30,6 @@ export default {
     plugins: plugins,
     input: "./src/index.ts",
     output: [
-        { file: "./dist/index.esm.js", format: "esm", name: "YourProjectName" }
+        { file: "./dist/index.js", format: "esm", name: "FlutterFastlaneAction" }
     ]
 }

@@ -3,7 +3,7 @@ description: "Automatically sets up Flutter and Fastlane, then builds and deploy
 author: "Dev TtangKong"
 runs:
   using: "node24"
-  main: "dist/index.esm.js"
+  main: "dist/index.js"
 
 branding:
   icon: upload
