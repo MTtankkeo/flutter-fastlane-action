@@ -1,0 +1,33 @@
+name: Check dist
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  check-dist:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Setup Dependencies
+        run: npm ci
+
+      - name: Build dist
+        run: npm run build
+
+      - name: Check dist
+        run: |
+          if ! git diff --exit-code -- dist/; then
+            echo "::error::dist/ is out of date. Run 'npm run build' and commit the changes."
+            exit 1
+          fi
