@@ -158,7 +158,7 @@ jobs:
           match-repository: Grimity/grimity-flutter-certs
           match-password: ${{ secrets.MATCH_PASSWORD }}
           appstore-connect-issuer-id: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
-          appstore-connect-key-id: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          appstore-connect-key-id: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
           appstore-connect-key: ${{ secrets.APP_STORE_CONNECT_KEY }}
           appstore-team-id: ${{ secrets.APP_STORE_TEAM_ID }}
 
