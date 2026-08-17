@@ -1,10 +1,10 @@
 import localeCode from "locale-code";
 import { setFailed, setOutput } from "@actions/core";
 import { exec } from "@actions/exec";
-import { Config } from "./components/config";
-import { FastlaneRunner } from "./components/fastlane_runner";
-import { FastlaneAndroidRunner } from "./components/fastlane_android_runner";
-import { FastlaneIosRunner } from "./components/fastlane_ios_runner";
+import { Config } from "./lib/config";
+import { FastlaneRunner } from "./lib/fastlane_runner";
+import { FastlaneAndroidRunner } from "./android/fastlane_android_runner";
+import { FastlaneIosRunner } from "./ios/fastlane_ios_runner";
 
 function isValidLanguageRegion(langCode: string) {
   const [lang, region] = langCode.split('-');

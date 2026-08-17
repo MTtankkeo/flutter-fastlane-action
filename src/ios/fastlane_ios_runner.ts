@@ -11,10 +11,10 @@ import exportOptionsContent from "../../modules/ios/ExportOptions.plist";
 import matchFileContent from "../../modules/ios/Matchfile";
 
 import { join } from "path";
-import { Config } from "./config";
-import { FastlaneRunner } from "./fastlane_runner";
+import { Config } from "../lib/config";
+import { FastlaneRunner } from "../lib/fastlane_runner";
 import { mkdirSync, readFileSync, writeFileSync } from "fs";
-import { Fastlane } from "./fastlane";
+import { Fastlane } from "../lib/fastlane";
 
 /**
  * iOS-specific fastlane runner handling file generation and build execution

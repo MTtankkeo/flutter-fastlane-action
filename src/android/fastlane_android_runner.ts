@@ -4,12 +4,12 @@ import androidFastfileContent from "../../modules/android/Fastfile";
 // @ts-ignore
 import androidAppfileContent from "../../modules/android/Appfile";
 
-import { FastlaneRunner } from "./fastlane_runner";
+import { FastlaneRunner } from "../lib/fastlane_runner";
 import { join } from "path";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
-import { Config } from "./config";
+import { Config } from "../lib/config";
 import { exec } from "@actions/exec";
-import { Fastlane } from "./fastlane";
+import { Fastlane } from "../lib/fastlane";
 
 /**
  * Android-specific fastlane runner handling file generation and build execution
