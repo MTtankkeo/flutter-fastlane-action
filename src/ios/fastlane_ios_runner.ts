@@ -42,26 +42,36 @@ export class FastlaneIosRunner extends FastlaneRunner {
             const oldAppId = config.iosAppId;
             const newAppId = config.iosAppId.replaceAll("_", "-");
             config.iosAppId = newAppId;
-            console.log(`Warning: iOS app ID contained '_' and was converted to '${newAppId}' (original: '${oldAppId}')`);
+            console.log(
+                `Warning: iOS app ID contained '_' and was converted to '${newAppId}' (original: '${oldAppId}')`
+            );
         }
-    
+
         // If iOS bundle ID is not provided, attempt to infer
         // it based on the typical Flutter project structure.
         if (config.iosAppId == "") {
-            const target = join(config.pubspecDir, config.iosDir, "Runner.xcodeproj", "project.pbxproj");
+            const target = join(
+                config.pubspecDir,
+                config.iosDir,
+                "Runner.xcodeproj",
+                "project.pbxproj"
+            );
             const buffer = readFileSync(target).toString();
-            const matches = [...buffer.matchAll(/(?<=PRODUCT_BUNDLE_IDENTIFIER\s*=\s*"?)[\w.-]+(?=\"?;)/g)];
-    
+            const matches = [
+                ...buffer.matchAll(/(?<=PRODUCT_BUNDLE_IDENTIFIER\s*=\s*"?)[\w.-]+(?=\"?;)/g),
+            ];
+
             if (matches.length > 0) {
-                config.iosAppId = matches
-                    .map(m => m[0])
-                    .find(v => !v.includes("RunnerTests") && !v.includes("UITests")) || "";
+                config.iosAppId =
+                    matches
+                        .map((m) => m[0])
+                        .find((v) => !v.includes("RunnerTests") && !v.includes("UITests")) || "";
             }
-    
+
             if (config.iosAppId == "") {
                 throw new Error(
                     "iOS Bundle Identifier not found.\n" +
-                    "(💡 You can either provide 'app-id' or both 'android-app-id' and 'ios-app-id' in GitHub Action inputs.)"
+                        "(💡 You can either provide 'app-id' or both 'android-app-id' and 'ios-app-id' in GitHub Action inputs.)"
                 );
             }
         }
@@ -72,7 +82,7 @@ export class FastlaneIosRunner extends FastlaneRunner {
         const iosDir = config.iosDir;
 
         console.log("📄 Adding the fastlane folder in the ios directory.");
-        mkdirSync(join(pubspecDir, iosDir, "fastlane"), {recursive: true});
+        mkdirSync(join(pubspecDir, iosDir, "fastlane"), { recursive: true });
 
         console.log("📄 Adding Fastfile in the ios directory.");
         writeFileSync(join(pubspecDir, iosDir, "fastlane", "Fastfile"), iosFastfileContent);
@@ -80,8 +90,7 @@ export class FastlaneIosRunner extends FastlaneRunner {
         console.log("📄 Adding Appfile in the ios directory.");
         writeFileSync(
             join(pubspecDir, iosDir, "fastlane", "Appfile"),
-            (iosAppfileContent as string)
-                .replace("{app-bundle-id}", config.iosAppId)
+            (iosAppfileContent as string).replace("{app-bundle-id}", config.iosAppId)
         );
 
         console.log("📄 Adding Matchfile in the ios directory.");
@@ -93,7 +102,10 @@ export class FastlaneIosRunner extends FastlaneRunner {
         );
 
         console.log("📄 Adding ExportOptions.plist in the ios directory.");
-        writeFileSync(join(pubspecDir, iosDir, "fastlane", "ExportOptions.plist"), exportOptionsContent);
+        writeFileSync(
+            join(pubspecDir, iosDir, "fastlane", "ExportOptions.plist"),
+            exportOptionsContent
+        );
     }
 
     async run(config: Config): Promise<void> {
@@ -110,26 +122,27 @@ export class FastlaneIosRunner extends FastlaneRunner {
             "deploy",
             {
                 ...config.baseOptions,
-                "pubspec_name": config.pubspecName,
-                "build_dest_path": config.ipaDestPath,
-                "match_keychain_password": config.matchKeychainPassword,
-                "skip_wait_processing": config.skipWaitProcessing,
-                "bundle_identifier": config.iosAppId,
-                "appstore_team_id": config.appstoreTeamId,
+                pubspec_name: config.pubspecName,
+                build_dest_path: config.ipaDestPath,
+                match_keychain_password: config.matchKeychainPassword,
+                skip_wait_processing: config.skipWaitProcessing,
+                bundle_identifier: config.iosAppId,
+                appstore_team_id: config.appstoreTeamId,
             },
-            { // ENV
-                "APPSTORE_CONNECT_ISSUER_ID": config.appstoreConnectIssuerId,
-                "APPSTORE_CONNECT_KEY_ID": config.appstoreConnectKeyId,
-                "APPSTORE_CONNECT_KEY": config.appstoreConnectKey,
-                "MATCH_PASSWORD": config.matchPassword,
-            },
+            {
+                // ENV
+                APPSTORE_CONNECT_ISSUER_ID: config.appstoreConnectIssuerId,
+                APPSTORE_CONNECT_KEY_ID: config.appstoreConnectKeyId,
+                APPSTORE_CONNECT_KEY: config.appstoreConnectKey,
+                MATCH_PASSWORD: config.matchPassword,
+            }
         );
 
         // Notify that the upload has been completed, but the new build
         // may take some time to appear on App Store or TestFlight.
         if (config.skipWaitProcessing === "true") {
             console.log(
-                "The deployment has been completed, but it may take some time " +
+                "The deployment has been completed, but it may take some time",
                 "for the new version to appear on the App Store or TestFlight."
             );
         }

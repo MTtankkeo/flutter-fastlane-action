@@ -33,7 +33,9 @@ export class FastlaneAndroidRunner extends FastlaneRunner {
             const oldAppId = config.androidAppId;
             const newAppId = config.androidAppId.replaceAll("-", "_");
             config.androidAppId = newAppId;
-            console.log(`Warning: Android app ID contained '-' and was converted to '${newAppId}' (original: '${oldAppId}')`);
+            console.log(
+                `Warning: Android app ID contained '-' and was converted to '${newAppId}' (original: '${oldAppId}')`
+            );
         }
 
         // If Android app bundle ID is not provided, attempt to infer
@@ -52,12 +54,14 @@ export class FastlaneAndroidRunner extends FastlaneRunner {
                 if (result?.length == 1) {
                     config.androidAppId = result[0];
                 } else {
+                    // prettier-ignore
                     throw new Error(
                         "Android Application ID not found.\n" +
                         "(💡 You can either provide 'app-id' or both 'android-app-id' and 'ios-app-id' in GitHub Action inputs.)"
                     );
                 }
             } else {
+                // prettier-ignore
                 throw new Error(
                     "Android build.gradle not found.\n" +
                     "(💡 You can either provide 'app-id' or both 'android-app-id' and 'ios-app-id' in GitHub Action inputs.)"
@@ -67,11 +71,7 @@ export class FastlaneAndroidRunner extends FastlaneRunner {
 
         // Determine the full path for the Google service account
         // JSON file based on the provided directory input.
-        const serviceAccountFullPath = join(
-            pubspecDir,
-            androidDir,
-            config.serviceAccountPath,
-        );
+        const serviceAccountFullPath = join(pubspecDir, androidDir, config.serviceAccountPath);
 
         // If a JSON string is provided via input, write it to the file.
         // Otherwise, ensure the file exists at the expected location,
@@ -80,7 +80,9 @@ export class FastlaneAndroidRunner extends FastlaneRunner {
             console.log("📄 Adding the given Google service account JSON file for the Play Store.");
 
             // In GitHub Actions, inputs must always be provided in Base64 format.
-            const decodedBase64 = Buffer.from(config.serviceAccountJson, "base64").toString("utf-8");
+            const decodedBase64 = Buffer.from(config.serviceAccountJson, "base64").toString(
+                "utf-8"
+            );
 
             writeFileSync(serviceAccountFullPath, decodedBase64);
         } else {
@@ -89,7 +91,7 @@ export class FastlaneAndroidRunner extends FastlaneRunner {
                 const solutions = [
                     `Provide it via 'service-account-json' input`,
                     `Place the Google service account JSON file at '${serviceAccountFullPath}'`,
-                    `Or specify a different directory using 'service-account-path' input and place the JSON file there`
+                    `Or specify a different directory using 'service-account-path' input and place the JSON file there`,
                 ];
 
                 throw new Error(
@@ -113,10 +115,10 @@ export class FastlaneAndroidRunner extends FastlaneRunner {
         }
 
         console.log("📄 Adding the fastlane folder in the android directory.");
-        mkdirSync(join(pubspecDir, androidDir, "fastlane"), {recursive: true});
+        mkdirSync(join(pubspecDir, androidDir, "fastlane"), { recursive: true });
 
         console.log("📄 Adding Fastfile in the android directory.");
-        writeFileSync(join(pubspecDir, androidDir, "fastlane", "Fastfile"), androidFastfileContent)
+        writeFileSync(join(pubspecDir, androidDir, "fastlane", "Fastfile"), androidFastfileContent);
 
         console.log("📄 Adding Appfile in the android directory.");
         writeFileSync(
@@ -135,12 +137,12 @@ export class FastlaneAndroidRunner extends FastlaneRunner {
                 "metadata",
                 "android",
                 config.releaseNoteLanguage,
-                "changelogs",
+                "changelogs"
             );
 
             const changelogFile = join(changelogDir, "default.txt");
 
-            mkdirSync(changelogDir, {recursive: true});
+            mkdirSync(changelogDir, { recursive: true });
             writeFileSync(changelogFile, config.releaseNote.replaceAll("\\n", "\n"));
         }
     }
@@ -149,15 +151,10 @@ export class FastlaneAndroidRunner extends FastlaneRunner {
         const pubspecDir = config.pubspecDir;
         const androidDir = config.androidDir;
 
-        await Fastlane.run(
-            join(pubspecDir, androidDir, "fastlane"),
-            "android",
-            "deploy",
-            {
-                ...config.baseOptions,
-                "draft": config.draft,
-                "build_dest_path": config.aabDestPath,
-            },
-        );
+        await Fastlane.run(join(pubspecDir, androidDir, "fastlane"), "android", "deploy", {
+            ...config.baseOptions,
+            draft: config.draft,
+            build_dest_path: config.aabDestPath,
+        });
     }
 }

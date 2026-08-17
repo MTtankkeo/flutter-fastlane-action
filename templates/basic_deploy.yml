@@ -76,7 +76,7 @@ jobs:
           release-note: ${{ github.event.inputs.RELEASE_NOTE }}
 
           # Fastlane match git repository (e.g., "my-org/my-cert-repo")
-          match-repository: {...}
+          match-repository: { ... }
 
           # Password for match repository
           match-password: ${{ secrets.MATCH_PASSWORD }}

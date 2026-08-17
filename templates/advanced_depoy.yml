@@ -10,7 +10,7 @@ name: Deploy
 # - SSH_PRIVATE_KEY
 #
 # NOTE:
-# ⚠️ Make sure to add the `pubspec_version_tool` package 
+# ⚠️ Make sure to add the `pubspec_version_tool` package
 # to the `dev_dependencies` field in your project's pubspec.yaml.
 #
 # This allows the build number to be incremented automatically.

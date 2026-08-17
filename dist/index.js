@@ -33583,7 +33583,7 @@ class Fastlane {
             cwd: entryDir,
             env: {
                 ...this.sanitizeEnv(process.env),
-                ...env
+                ...env,
             },
         });
     }
@@ -33626,11 +33626,13 @@ class FastlaneAndroidRunner extends FastlaneRunner {
                     config.androidAppId = result[0];
                 }
                 else {
+                    // prettier-ignore
                     throw new Error("Android Application ID not found.\n" +
                         "(💡 You can either provide 'app-id' or both 'android-app-id' and 'ios-app-id' in GitHub Action inputs.)");
                 }
             }
             else {
+                // prettier-ignore
                 throw new Error("Android build.gradle not found.\n" +
                     "(💡 You can either provide 'app-id' or both 'android-app-id' and 'ios-app-id' in GitHub Action inputs.)");
             }
@@ -33653,7 +33655,7 @@ class FastlaneAndroidRunner extends FastlaneRunner {
                 const solutions = [
                     `Provide it via 'service-account-json' input`,
                     `Place the Google service account JSON file at '${serviceAccountFullPath}'`,
-                    `Or specify a different directory using 'service-account-path' input and place the JSON file there`
+                    `Or specify a different directory using 'service-account-path' input and place the JSON file there`,
                 ];
                 throw new Error(`Google service account JSON not found.\nPossible solutions:\n- ${solutions.join("\n- ")}`);
             }
@@ -33692,8 +33694,8 @@ class FastlaneAndroidRunner extends FastlaneRunner {
         const androidDir = config.androidDir;
         await Fastlane.run(join(pubspecDir, androidDir, "fastlane"), "android", "deploy", {
             ...config.baseOptions,
-            "draft": config.draft,
-            "build_dest_path": config.aabDestPath,
+            draft: config.draft,
+            build_dest_path: config.aabDestPath,
         });
     }
 }
@@ -33890,11 +33892,14 @@ class FastlaneIosRunner extends FastlaneRunner {
         if (config.iosAppId == "") {
             const target = join(config.pubspecDir, config.iosDir, "Runner.xcodeproj", "project.pbxproj");
             const buffer = readFileSync(target).toString();
-            const matches = [...buffer.matchAll(/(?<=PRODUCT_BUNDLE_IDENTIFIER\s*=\s*"?)[\w.-]+(?=\"?;)/g)];
+            const matches = [
+                ...buffer.matchAll(/(?<=PRODUCT_BUNDLE_IDENTIFIER\s*=\s*"?)[\w.-]+(?=\"?;)/g),
+            ];
             if (matches.length > 0) {
-                config.iosAppId = matches
-                    .map(m => m[0])
-                    .find(v => !v.includes("RunnerTests") && !v.includes("UITests")) || "";
+                config.iosAppId =
+                    matches
+                        .map((m) => m[0])
+                        .find((v) => !v.includes("RunnerTests") && !v.includes("UITests")) || "";
             }
             if (config.iosAppId == "") {
                 throw new Error("iOS Bundle Identifier not found.\n" +
@@ -33910,8 +33915,7 @@ class FastlaneIosRunner extends FastlaneRunner {
         console.log("📄 Adding Fastfile in the ios directory.");
         writeFileSync(join(pubspecDir, iosDir, "fastlane", "Fastfile"), iosFastfileContent);
         console.log("📄 Adding Appfile in the ios directory.");
-        writeFileSync(join(pubspecDir, iosDir, "fastlane", "Appfile"), iosAppfileContent
-            .replace("{app-bundle-id}", config.iosAppId));
+        writeFileSync(join(pubspecDir, iosDir, "fastlane", "Appfile"), iosAppfileContent.replace("{app-bundle-id}", config.iosAppId));
         console.log("📄 Adding Matchfile in the ios directory.");
         writeFileSync(join(pubspecDir, iosDir, "fastlane", "Matchfile"), matchFileContent
             .replace("{app-bundle-id}", config.iosAppId)
@@ -33927,32 +33931,32 @@ class FastlaneIosRunner extends FastlaneRunner {
         }
         await Fastlane.run(join(pubspecDir, iosDir, "fastlane"), "ios", "deploy", {
             ...config.baseOptions,
-            "pubspec_name": config.pubspecName,
-            "build_dest_path": config.ipaDestPath,
-            "match_keychain_password": config.matchKeychainPassword,
-            "skip_wait_processing": config.skipWaitProcessing,
-            "bundle_identifier": config.iosAppId,
-            "appstore_team_id": config.appstoreTeamId,
+            pubspec_name: config.pubspecName,
+            build_dest_path: config.ipaDestPath,
+            match_keychain_password: config.matchKeychainPassword,
+            skip_wait_processing: config.skipWaitProcessing,
+            bundle_identifier: config.iosAppId,
+            appstore_team_id: config.appstoreTeamId,
         }, {
-            "APPSTORE_CONNECT_ISSUER_ID": config.appstoreConnectIssuerId,
-            "APPSTORE_CONNECT_KEY_ID": config.appstoreConnectKeyId,
-            "APPSTORE_CONNECT_KEY": config.appstoreConnectKey,
-            "MATCH_PASSWORD": config.matchPassword,
+            // ENV
+            APPSTORE_CONNECT_ISSUER_ID: config.appstoreConnectIssuerId,
+            APPSTORE_CONNECT_KEY_ID: config.appstoreConnectKeyId,
+            APPSTORE_CONNECT_KEY: config.appstoreConnectKey,
+            MATCH_PASSWORD: config.matchPassword,
         });
         // Notify that the upload has been completed, but the new build
         // may take some time to appear on App Store or TestFlight.
         if (config.skipWaitProcessing === "true") {
-            console.log("The deployment has been completed, but it may take some time " +
-                "for the new version to appear on the App Store or TestFlight.");
+            console.log("The deployment has been completed, but it may take some time", "for the new version to appear on the App Store or TestFlight.");
         }
     }
 }
 
 function isValidLanguageRegion(langCode) {
-    const [lang, region] = langCode.split('-');
+    const [lang, region] = langCode.split("-");
     // iso 639 language + iso 3166 country
-    return LocaleCode.getLanguageNativeName(lang) !== undefined &&
-        LocaleCode.getCountryCode(region) !== undefined;
+    return (LocaleCode.getLanguageNativeName(lang) !== undefined &&
+        LocaleCode.getCountryCode(region) !== undefined);
 }
 (async () => {
     const config = new Config();
@@ -33981,7 +33985,7 @@ function isValidLanguageRegion(langCode) {
     console.log(`App Name       : ${config.pubspecName}`);
     console.log(`Version Name   : ${config.versionName}`);
     console.log(`Build Number   : ${config.buildNumber}`);
-    runners.forEach(runner => runner.print(config));
+    runners.forEach((runner) => runner.print(config));
     console.log("───────────────────────────────────────────────────\n");
     for (const runner of runners) {
         await runner.ready(config);
@@ -34003,7 +34007,7 @@ function isValidLanguageRegion(langCode) {
     }
     console.log("🚀 All platform builds have been deployed successfully.");
     coreExports.setOutput("success", true);
-})().catch(error => {
+})().catch((error) => {
     console.log(error);
     coreExports.setFailed("Deployment failed.");
 });

@@ -7,11 +7,13 @@ import { FastlaneAndroidRunner } from "./android/fastlane_android_runner";
 import { FastlaneIosRunner } from "./ios/fastlane_ios_runner";
 
 function isValidLanguageRegion(langCode: string) {
-  const [lang, region] = langCode.split('-');
+    const [lang, region] = langCode.split("-");
 
-  // iso 639 language + iso 3166 country
-  return localeCode.getLanguageNativeName(lang) !== undefined &&
-         localeCode.getCountryCode(region) !== undefined;
+    // iso 639 language + iso 3166 country
+    return (
+        localeCode.getLanguageNativeName(lang) !== undefined &&
+        localeCode.getCountryCode(region) !== undefined
+    );
 }
 
 (async () => {
@@ -39,7 +41,9 @@ function isValidLanguageRegion(langCode: string) {
     // Validate the language-region format (e.g., "ko-KR", "en-US")
     // Ensures the release note language follows the ISO 639-1 + ISO 3166-1 alpha-2 standard.
     if (!isValidLanguageRegion(config.releaseNoteLanguage)) {
-        throw new Error(`Invalid language format: '${config.releaseNoteLanguage}'. Expected format like "en-US" or "ko-KR".`);
+        throw new Error(
+            `Invalid language format: '${config.releaseNoteLanguage}'. Expected format like "en-US" or "ko-KR".`
+        );
     }
 
     console.log("\n🐦 Build And Deploy Information");
@@ -47,7 +51,7 @@ function isValidLanguageRegion(langCode: string) {
     console.log(`App Name       : ${config.pubspecName}`);
     console.log(`Version Name   : ${config.versionName}`);
     console.log(`Build Number   : ${config.buildNumber}`);
-    runners.forEach(runner => runner.print(config));
+    runners.forEach((runner) => runner.print(config));
     console.log("───────────────────────────────────────────────────\n");
 
     for (const runner of runners) {
@@ -55,7 +59,7 @@ function isValidLanguageRegion(langCode: string) {
     }
 
     // Install dependencies for Flutter.
-    await exec("flutter pub get", [], {cwd: config.pubspecDir});
+    await exec("flutter pub get", [], { cwd: config.pubspecDir });
 
     // Install Fastlane using Homebrew or RubyGems for iOS/Android deployment tasks.
     if (config.isMac) {
@@ -74,7 +78,7 @@ function isValidLanguageRegion(langCode: string) {
     console.log("🚀 All platform builds have been deployed successfully.");
 
     setOutput("success", true);
-})().catch(error => {
+})().catch((error) => {
     console.log(error);
     setFailed("Deployment failed.");
 });

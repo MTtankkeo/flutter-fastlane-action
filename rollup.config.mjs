@@ -7,20 +7,14 @@ import { importAsString } from "rollup-plugin-string-import";
 const plugins = [
     typescript({
         tsconfig: "./tsconfig.json",
-        useTsconfigDeclarationDir: true
+        useTsconfigDeclarationDir: true,
     }),
     resolve(), // Include `node_modules`
     commonjs(),
     importAsString({
-        include: [
-            "**/Fastfile",
-            "**/Matchfile",
-            "**/Appfile",
-            "**/*.plist",
-            "**/Gemfile",
-        ],
+        include: ["**/Fastfile", "**/Matchfile", "**/Appfile", "**/*.plist", "**/Gemfile"],
     }),
-]
+];
 
 /**
  * This config values that defines about rollup compile options.
@@ -29,7 +23,5 @@ const plugins = [
 export default {
     plugins: plugins,
     input: "./src/index.ts",
-    output: [
-        { file: "./dist/index.js", format: "esm", name: "FlutterFastlaneAction" }
-    ]
-}
+    output: [{ file: "./dist/index.js", format: "esm", name: "FlutterFastlaneAction" }],
+};

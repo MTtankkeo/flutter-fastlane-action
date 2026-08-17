@@ -8,12 +8,14 @@ on:
 
 jobs:
   check-dist:
+    name: Dist
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js 24
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 24

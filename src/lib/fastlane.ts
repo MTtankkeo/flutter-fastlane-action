@@ -18,9 +18,9 @@ export class Fastlane {
     ) {
         const optionArgs = options
             ? Object.entries(options)
-                .filter(([_, value]) => value != null && value !== "")
-                .map(([key, value]) => `"${key}:${value.toString().replaceAll('"', '\\"')}"`)
-                .join(" ")
+                  .filter(([_, value]) => value != null && value !== "")
+                  .map(([key, value]) => `"${key}:${value.toString().replaceAll('"', '\\"')}"`)
+                  .join(" ")
             : "";
 
         const command = `fastlane ${platform} ${laneName} ${optionArgs}`;
@@ -28,7 +28,7 @@ export class Fastlane {
             cwd: entryDir,
             env: {
                 ...this.sanitizeEnv(process.env),
-                ...env
+                ...env,
             },
         });
     }
